@@ -1,6 +1,14 @@
 const $=id=>document.getElementById(id);
 const select=$("mealSelect");
 
+const mealOrder={"중식":0,"석식":1};
+[...select.options]
+ .sort((a,b)=>{
+  const ma=meals[Number(a.value)],mb=meals[Number(b.value)];
+  return ma.date.localeCompare(mb.date)||(mealOrder[ma.meal]??9)-(mealOrder[mb.meal]??9);
+ })
+ .forEach(option=>select.appendChild(option));
+
 const LIMITS={
  co2:{min:400,max:5000,label:"CO₂",unit:"ppm"},
  pmIn:{min:0,max:500,label:"실내 PM2.5",unit:"μg/m³"},
