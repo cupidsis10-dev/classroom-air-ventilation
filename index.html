@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f7f9">
+<title>교실 환기 판단 도우미</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+  <div class="kicker">SCHOOL AIR · VENTILATION SIMULATOR</div>
+  <h1>교실 환기 판단 도우미</h1>
+  <p>급식 후 냄새, 교실의 이산화탄소, 바깥의 초미세먼지를 함께 보며 환기 시간을 비교하는 탐구용 프로그램입니다. 어려운 수치만 보여주는 대신, 각 값이 무엇을 뜻하는지도 함께 설명합니다.</p>
+</section>
+
+<div class="grid">
+<section class="card">
+  <h2>1. 오늘 급식</h2>
+  <div class="field">
+    <label for="mealSelect">2026년 9월 중·석식 선택</label>
+    <select id="mealSelect">
+        <option value="0">09-01 중식</option>
+        <option value="1">09-02 중식</option>
+        <option value="2">09-03 중식</option>
+        <option value="3">09-04 중식</option>
+        <option value="4">09-05 중식</option>
+        <option value="5">09-03 석식</option>
+        <option value="6">09-04 석식</option>
+        <option value="7">09-07 중식</option>
+        <option value="8">09-08 중식</option>
+        <option value="9">09-09 중식</option>
+        <option value="10">09-10 중식</option>
+        <option value="11">09-11 중식</option>
+        <option value="12">09-12 중식</option>
+        <option value="13">09-07 석식</option>
+        <option value="14">09-08 석식</option>
+        <option value="15">09-10 석식</option>
+        <option value="16">09-11 석식</option>
+        <option value="17">09-14 중식</option>
+        <option value="18">09-15 중식</option>
+        <option value="19">09-16 중식</option>
+        <option value="20">09-17 중식</option>
+        <option value="21">09-18 중식</option>
+        <option value="22">09-19 중식</option>
+        <option value="23">09-15 석식</option>
+        <option value="24">09-17 석식</option>
+        <option value="25">09-18 석식</option>
+        <option value="26">09-21 중식</option>
+        <option value="27">09-22 중식</option>
+        <option value="28">09-23 중식</option>
+        <option value="29">09-21 석식</option>
+        <option value="30">09-22 석식</option>
+        <option value="31">09-28 중식</option>
+        <option value="32">09-29 중식</option>
+        <option value="33">09-30 중식</option>
+        <option value="34">09-28 석식</option>
+        <option value="35">09-29 석식</option>
+      </select>
+  </div>
+  <div id="mealMenu" class="meal-menu"></div>
+      <div class="mini" style="margin-top:6px">※ 9월 중·석식 목록은 프로그램에 저장되어 있어 바로 선택할 수 있습니다.</div>
+  <div id="mealBadge" class="badge"></div>
+  <div id="sourceBox" class="sourcebox"></div>
+</section>
+
+<section class="card">
+  <h2>2. 현재 공기 상태</h2>
+  <div class="field-grid">
+    <div class="field">
+      <label for="co2">이산화탄소 CO₂ (ppm)</label>
+      <input id="co2" type="number" min="400" max="5000" step="10" value="1400">
+      <div class="mini">학생이 많거나 환기가 부족하면 올라갑니다. 자연환기 교실의 비교 기준은 1,000 ppm 이하입니다.</div>
+    </div>
+    <div class="field">
+      <label for="pmIn">교실 안 초미세먼지 PM2.5</label>
+      <input id="pmIn" type="number" min="0" max="500" step="1" value="15">
+      <div class="mini">숫자가 낮을수록 초미세먼지가 적습니다. 단위는 μg/m³입니다.</div>
+    </div>
+    <div class="field">
+      <label for="pmOut">바깥 초미세먼지 PM2.5</label>
+      <input id="pmOut" type="number" min="0" max="500" step="1" value="20">
+      <div class="mini">바깥 값이 높으면 창문을 오래 열 때 실내 초미세먼지가 오를 수 있습니다.</div>
+    </div>
+    <div class="field">
+      <label for="odor">음식 냄새 정도 (비교용 %)</label>
+      <input id="odor" type="number" min="0" max="100" step="5" value="100">
+      <div class="mini">실제 센서 농도가 아닙니다. 급식 직후를 100으로 두고 얼마나 줄어드는지만 비교합니다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="card full">
+  <h2>3. 교실과 환기 조건</h2>
+  <div class="field-grid">
+    <div class="field">
+      <label for="students">교실에 있는 사람 수</label>
+      <input id="students" type="number" min="0" max="60" value="30">
+    </div>
+    <div class="field">
+      <label for="volume">교실 부피 (m³)</label>
+      <input id="volume" type="number" min="50" max="500" value="180">
+    </div>
+    <div class="field">
+      <label for="ach">환기 세기 (ACH)</label>
+      <input id="ach" type="number" min="0.1" max="20" step="0.5" value="5">
+      <div class="mini">ACH 5는 1시간 동안 교실 부피의 약 5배만큼 공기가 교환된다는 뜻입니다. 실제 값은 창문 크기와 바람에 따라 달라집니다.</div>
+    </div>
+    <div class="field">
+      <label for="odorTarget">냄새 감소 목표</label>
+      <select id="odorTarget">
+        <option value="70">처음보다 30% 감소</option>
+        <option value="50" selected>처음보다 50% 감소</option>
+        <option value="30">처음보다 70% 감소</option>
+      </select>
+      <div class="mini">공식 안전기준이 아니라 환기 시간을 비교하기 위한 목표입니다.</div>
+    </div>
+    <div class="field">
+      <label for="ventMinutes">내가 환기할 시간</label>
+      <select id="ventMinutes">
+        <option value="5">5분</option>
+        <option value="10" selected>10분</option>
+        <option value="15">15분</option>
+        <option value="20">20분</option>
+        <option value="25">25분</option>
+        <option value="30">30분</option>
+      </select>
+      <div class="mini">선택한 시간 뒤의 CO₂, 냄새, 초미세먼지 상태를 바로 계산해 보여줍니다.</div>
+    </div>
+  </div>
+
+  <div class="recommend-row">
+    <div class="recommend-copy">
+      <b>시뮬레이션상 적정 환기 시간 보기</b>
+      <span>처음에는 꺼져 있습니다. 보고 싶을 때만 켤 수 있습니다.</span>
+    </div>
+    <label class="switch" aria-label="적정 환기 시간 보기">
+      <input id="recommendToggle" type="checkbox">
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div id="recommendResult" class="recommend-result"></div>
+</section>
+
+<section class="card full">
+  <h2>4. 선택한 환기 시간의 결과</h2>
+  <div class="result">
+    <div class="result-icon">↗</div>
+    <div><h3 id="decision">계산 중</h3><p id="reason"></p></div>
+  </div>
+  <div id="selectedResult" class="selected-result"></div>
+  <div class="metrics">
+    <div class="metric"><div class="name">현재 CO₂</div><div class="value" id="mCo2">-</div><div class="note" id="mCo2Note">-</div></div>
+    <div class="metric"><div class="name">바깥 초미세먼지</div><div class="value" id="mPm">-</div><div class="note" id="mPmNote">-</div></div>
+    <div class="metric"><div class="name">급식 메뉴에서 확인한 냄새원</div><div class="value" id="mMeal">-</div><div class="note">메뉴 이름만으로 확인 가능한 항목만 표시</div></div>
+  </div>
+</section>
+
+<section class="card full">
+  <h2>5. 몇 분 환기하면 어떻게 달라질까?</h2>
+  <div style="overflow:auto">
+  <table>
+    <thead><tr><th>환기 시간</th><th>CO₂</th><th>냄새</th><th>PM2.5</th><th>쉽게 해석하면</th></tr></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  </div>
+  <div class="guide">
+    <div><b>CO₂</b>1,000 ppm 아래면 자연환기 교실 기준 이하입니다.</div>
+    <div><b>냄새</b>50%는 '처음의 절반 정도 남음'이라는 비교값입니다.</div>
+    <div><b>PM2.5</b>35 μg/m³를 넘으면 학교 기준과 비교했을 때 높은 상태입니다.</div>
+  </div>
+</section>
+
+<section class="card full">
+  <h2>6. 30분 동안의 변화</h2>
+  <div class="chartbox"><svg id="chart" viewBox="0 0 820 220" preserveAspectRatio="none"></svg></div>
+  <div class="help">세 값은 단위가 서로 달라 그대로 한 그래프에 겹칠 수 없어서, 변화 방향만 비교할 수 있도록 각각 0~100 범위로 맞춰 표시했습니다.</div>
+</section>
+
+<section class="card full">
+  <div class="note-box">
+    <b>이 프로그램의 결과를 읽는 방법</b><br>
+    이 프로그램은 실제 센서가 아니라 시뮬레이터입니다. '10분 환기'라는 결과가 모든 교실에서 정확히 10분이 정답이라는 뜻은 아닙니다. 같은 교실이라도 바람, 창문 크기, 맞통풍 여부에 따라 실제 환기 속도는 달라집니다. 따라서 조건을 바꿨을 때 CO₂·냄새·초미세먼지가 어느 방향으로 변하는지를 비교하는 데 사용하는 것이 목적입니다.
+  </div>
+  <div class="foot">식단표는 2026년 9월 중식 23회와 석식 13회, 총 36회를 분석했습니다. 김치류는 거의 매일 등장해 날짜별 냄새 차이를 설명하는 단독 지표로 사용하지 않았고, 메뉴명에서 확인 가능한 다른 냄새원 후보 유형을 함께 표시했습니다.</div>
+</section>
+</div>
+</div>
+
+<div id="recommendModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="recommendModalTitle">
+  <div class="modal">
+    <h3 id="recommendModalTitle">환기 적정 시간을 보시겠습니까?</h3>
+    <p>현재 입력한 조건을 기준으로 CO₂, 냄새, 초미세먼지를 함께 고려한 시간을 계산해 보여줍니다.</p>
+    <div class="modal-actions">
+      <button id="recommendNo" type="button">아니오</button>
+      <button id="recommendYes" type="button" class="primary">네</button>
+    </div>
+  </div>
+</div>
+
+<script src="meals.js"></script>
+<script src="app.js"></script>
+</body></html>
